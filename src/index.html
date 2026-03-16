@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>TaskFlow-Pro</title>
+    <link rel="stylesheet" href="./main.css">
+</head>
+
+<body>
+    <!--Meu Container-->
+    <div class="container">
+
+        <!--header-->
+        <h1> TaskFlow-Pro</h1>
+        <br><br>
+
+        <!--Aqui onde crio os botoes para filtras concluido, pendentes, e todos-->
+        <div class="filtro">
+            <button id="btnFiltro" onclick="mudarFiltro('todas')"> Todas </button>
+            <button id="btnFiltro" onclick="mudarFiltro('concluidas')"> Concluidas </button>
+            <button id="btnFiltro" onclick="mudarFiltro('pendentes')"> Pendentes </button>
+        </div>
+        <Br></Br>
+
+        <!--Aqui onde crio para o progresso em tempo real-->
+        <div class="progresso">
+            <div class="lado-esquerdo">
+                <h3>Keep it up!</h3>
+                <div class="barra">
+                    <div class="progresso-barra"></div>
+                </div>
+
+            </div>
+
+            <div class="progReal"></div>
+
+
+        </div>
+
+        <!--Meu Campo para adicionar as tarefas.-->
+        <div class="input-area">
+            <input type="text" id="taskInput" placeholder="Add new task...">
+            <button id="addBtn">+</button>
+        </div>
+
+        <!--Aqui vai apararecer tudo-->
+        <ul id="taskList"></ul>
+
+
+
+    </div>
+    <footer>
+        <p> &copy; Joel Marroquim 2026</p>
+    </footer>
+
+
+    <!--Dialogo/ Minha mensagem de erro quando nao preenchido o campo vazio-->
+    <dialog id="meuModal">
+        <p>⚠️ Por favor, digite uma tarefa válida (letras ou números).</p>
+        <button id="btnfecharModal">Entendido</button>
+    </dialog>
+
+    <!--Chamada do Script-->
+    <script src="./main.js"></script>
+
+
+</body>
+
+
+
+</html>
