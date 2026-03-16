@@ -81,9 +81,11 @@ Desenvolver uma aplicação prática para consolidar fundamentos de JavaScript e
 ---
 
 ### 🧪 Evolução
+*(imagem da interface antes de adicionar produtos)*
+![Inicial](/src/images/preview-inicial.png)
 
-![Inicial](../TaskFlow-Pro/src/images/preview-inicial.png)
-![Final](../TaskFlow-Pro/src/images/preview-inicial.png)
+*(imagem da lista com itens adicionados)*git add
+![Final](/src/images/preview-final.png)
 
 ## 🚀 Próximas melhorias
 
