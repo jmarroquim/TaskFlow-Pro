@@ -15,8 +15,8 @@ let modal = document.querySelector('#meuModal') // Chamada do Id do Dialog.
 let btnFechar = document.querySelector('#btnfecharModal') // Chamada do Botao para fechar o Dialog.
 
 let progReal = document.querySelector('.progReal') // Chamada para a Div do progresso real/“vai buscar aquela div para eu poder mexer nela”
-
-
+let pendentes = document.querySelector('#pendentes') // Chamada para a Div do pendetne para eu mexer nela
+let totalizada = document.querySelector('#totalizada')
 
 //Botao Adicionar Tarefa
 btnAdicionar.addEventListener('click', function () {  // Evento ao carregar o btnAdicionar.
@@ -122,9 +122,23 @@ function mostrarTarefas() {
     progReal.textContent = `${concluidas} / ${total}` // aqui diz mostra o meu progresso no html
 
     let barra = document.querySelector('.progresso-barra') // “vai buscar aquela div para eu poder mexer nela”
-    let percentagem = (concluidas / total) * 100  // o calculo para achar a percentagem 
+    let percentagem = (concluidas / total) * 100  // o calculo para achar a percentagem, onde divide concluidas que recebe o filter
 
     barra.style.width = percentagem + "%"
+
+
+    //-----------------------Aqui vamos Mostrar o numero de tarefas pendentes e numero de tarefas concluidas
+
+    let numPendente = tarefas.filter(function (tarefa) {
+        return tarefa.concluida === false
+    }).length
+
+    pendentes.textContent = `⏳${numPendente} `
+
+    //----------------------- Aqui vamos Mostrar o numero de tarefas concluidas-------------------------
+
+    let numConcluidas = tarefas.filter(tarefa => tarefa.concluida === true).length
+    totalizada.textContent = `✔ ${numConcluidas}`
 
 
 }
