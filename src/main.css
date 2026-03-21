@@ -82,21 +82,28 @@ ul li:hover {
 /*Css de cada Li criada na lista de tarefas*/
 li {
     display: grid;
-    /* Coluna 1: tamanho do checkbox (auto) */
-    /* Coluna 2: ocupa todo o espaço restante (1fr) */
-    /* Coluna 3: tamanho do botão (auto) */
-    grid-template-columns: auto 1fr auto;
+    /* Coluna 1: Checkbox (auto) */
+    /* Coluna 2: Texto da Tarefa (1fr - estica para empurrar os botões) */
+    /* Coluna 3: Botão Editar (auto - ocupa só o espaço do lápis) */
+    /* Coluna 4: Botão Excluir (auto - ocupa só o espaço do X) */
+    grid-template-columns: auto 1fr auto auto;
     align-items: center;
     /* Alinha tudo no meio verticalmente */
     gap: 15px;
     /* Controla a distância entre eles */
-    padding: 8px 0;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    /* Linha sutil entre tarefas */
 }
 
 li button {
     background: none;
     border: none;
     cursor: pointer;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Main Css, da caixa do Dialogo*/
@@ -212,6 +219,11 @@ div.progresso p {
     color: #38bdf8;
     font-weight: bold;
     margin-top: 5px;
+}
+
+.texto-tarefa:focus {
+    outline: none;
+    border-bottom: 1px solid #38bdf8;
 }
 
 

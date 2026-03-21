@@ -74,6 +74,8 @@ function mostrarTarefas() {
 
     tarefasFiltradas.forEach(function (tarefa, posicao) { // Criamos o Loop, passa a pegar a primeira tarefa no loop.
 
+        let spanTexto = document.createElement("span") // criando uma variavel com elemento span
+        spanTexto.classList.add("texto-tarefa") // atibui uma class para meu span
         let li = document.createElement("li") // Criação: O código cria um elemento <li></li>.
 
         let checkbox = document.createElement("input") // Criação: O código cria um elemento <input>.
@@ -87,8 +89,8 @@ function mostrarTarefas() {
             mostrarTarefas()
         })
 
-
-        li.textContent = `${posicao + 1} - ${tarefa.texto}` // transforma o elemento, ou faz aparecer este elemento no HTML.
+        spanTexto.textContent = `${tarefa.texto}` // transforma o elemento, ou faz aparecer este elemento no HTML.
+        li.appendChild(spanTexto)
 
         if (tarefa.concluida) {
             li.style.textDecoration = "line-through"
@@ -97,6 +99,53 @@ function mostrarTarefas() {
 
         li.prepend(checkbox)
 
+        //--------------------------------------criar o botao para editar as tarefas
+        let btnEditar = document.createElement("button")
+        btnEditar.textContent = "✏️"
+
+        // Dando um Evento ao Bot "✏️".
+        btnEditar.addEventListener('click', function () {
+            spanTexto.contentEditable = true
+            spanTexto.focus()
+
+            let range = document.createRange() // cria a ferramenta para selecionar
+            range.selectNodeContents(spanTexto) // diz seleciona o texto todo dentro da minha variavel Span
+            range.collapse(false) // ruduz a selecão toda para apenas 1 ponto e false o final
+
+            let selecao = window.getSelection() // vai buscar a seleção atual do browser
+            selecao.removeAllRanges() // Limpa qualquer seleção anterior
+            selecao.addRange(range) // Aplica a nova seleção com o cursor no fim
+
+        })
+        li.appendChild(btnEditar)
+        lista.appendChild(li)
+
+
+        //-----------------------------------------aqui crio a keydown 
+        spanTexto.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault()
+                spanTexto.blur()
+            }
+
+        })
+
+        //------------------------------------------- Criando o evento Blur
+        spanTexto.addEventListener('blur', function () { // spanTexto é a minha variavel do input
+            spanTexto.contentEditable = false // o false faz o texto parar de ser editavel.
+            let novoTexto = spanTexto.textContent.trim()
+            if (novoTexto === "") {
+                modal.showModal()
+                return
+            }
+
+            tarefa.texto = spanTexto.textContent // atualiza o meu objeto para o novo texto que esta no meu span
+            salvarTarefas()
+            mostrarTarefas()
+
+        })
+
+        //----------------------------------------------------------------------------
         //Criação de Botao Remover as tarefas adicionadas.
         let btnRemover = document.createElement("button")
         btnRemover.textContent = "❌"
@@ -107,8 +156,10 @@ function mostrarTarefas() {
         })
 
 
-        li.appendChild(btnRemover)
+        li.appendChild(btnRemover) // aqui faz aparecer o botao na tela 
         lista.appendChild(li) // Pega o item e coloca na minha lista.
+
+
     })
 
 
@@ -163,4 +214,7 @@ input.addEventListener('keydown', function (e) {
 function salvarTarefas() {
     localStorage.setItem("tarefas", JSON.stringify(tarefas))
 }
+
+
+
 
