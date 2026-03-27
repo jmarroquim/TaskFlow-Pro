@@ -24,7 +24,7 @@ btnAdicionar.addEventListener('click', function () {  // Evento ao carregar o bt
     let texto = input.value    // Chama apenas o valor dentro do input.
 
     if (texto.trim() === "" || !/[a-zA-Z0-9]/.test(texto)) {  // Verifica se esta vazio o input.
-        modal.showModal() // Se estiver envia esta mensagem.
+        modal.showModal() // Se estiver envia esta mensagem que esta criado no HTML
         return
     }
 
@@ -74,9 +74,12 @@ function mostrarTarefas() {
 
     tarefasFiltradas.forEach(function (tarefa, posicao) { // Criamos o Loop, passa a pegar a primeira tarefa no loop.
 
+        //-----------------------------------Aqui vamos dar a função para o Botao adicionar.
+
+
         let spanTexto = document.createElement("span") // criando uma variavel com elemento span
         spanTexto.classList.add("texto-tarefa") // atibui uma class para meu span
-        let li = document.createElement("li") // Criação: O código cria um elemento <li></li>.
+        let li = document.createElement("li") // Criação: O código cria um elemento <li></li>, para cada tarefa.
 
         let checkbox = document.createElement("input") // Criação: O código cria um elemento <input>.
         checkbox.type = "checkbox" // Aplica o tipo
@@ -105,8 +108,32 @@ function mostrarTarefas() {
 
         // Dando um Evento ao Bot "✏️".
         btnEditar.addEventListener('click', function () {
+
+            li.classList.add("editing")    // cria uma class para minha li,( nesse caso para cada tarefa da minha tarefa.)
+
+            let textoOriginal = spanTexto.textContent
             spanTexto.contentEditable = true
             spanTexto.focus()
+
+            //-----------------------------------------aqui crio a keydown( Quando carrego no Enter, ele adicina)
+            spanTexto.addEventListener('keydown', function (e) {
+
+
+                if (e.key === 'Enter') {
+                    e.preventDefault()  // Previne a quebra de linha quando carregar enter
+                    spanTexto.blur()
+                }
+                if (e.key === 'Escape') {
+                    e.preventDefault() //PRevine a quebra de linha
+
+                    spanTexto.textContent = textoOriginal // Para voltar ao texto Original
+                    spanTexto.blur() // Para sair da edição
+                }
+
+
+
+            })
+
 
             let range = document.createRange() // cria a ferramenta para selecionar
             range.selectNodeContents(spanTexto) // diz seleciona o texto todo dentro da minha variavel Span
@@ -116,19 +143,18 @@ function mostrarTarefas() {
             selecao.removeAllRanges() // Limpa qualquer seleção anterior
             selecao.addRange(range) // Aplica a nova seleção com o cursor no fim
 
+
+
+
+
         })
+
         li.appendChild(btnEditar)
         lista.appendChild(li)
 
 
-        //-----------------------------------------aqui crio a keydown 
-        spanTexto.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault()
-                spanTexto.blur()
-            }
 
-        })
+
 
         //------------------------------------------- Criando o evento Blur
         spanTexto.addEventListener('blur', function () { // spanTexto é a minha variavel do input
@@ -161,6 +187,59 @@ function mostrarTarefas() {
 
 
     })
+
+    //-----------------------------------Criando um Botão para adicionar Inline
+    let btnAddInline = document.createElement('button')
+    btnAddInline.classList.add("btnAddInline")
+    btnAddInline.textContent = "➕"
+
+    lista.appendChild(btnAddInline)
+
+    //-----------------------------------Aqui vamos dar a função para o Botao adicionar.
+
+    btnAddInline.addEventListener('click', function () {
+        let criaLiAfterAdd = document.createElement("li") // Criar meu elemento Li
+        let spanTexto = document.createElement("span") // Criar o meu elemento Span
+
+        spanTexto.textContent = ""              // Faz aparecer no HTML vazio
+        criaLiAfterAdd.appendChild(spanTexto)   //
+
+        // Faz aparecer dentro da minha Lista
+        lista.insertBefore(criaLiAfterAdd, btnAddInline)
+        spanTexto.contentEditable = true
+        spanTexto.focus()
+
+        //-----------------------------------------aqui crio a keydown( Quando carrego no Enter, ele adicina)
+        spanTexto.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {    // se carregar no botao ESC
+                criaLiAfterAdd.remove() // apaga a minha linha que criou quando carregue no botao +
+            }
+
+            if (e.key === 'Enter') {
+                e.preventDefault()
+
+                let novoTexto = spanTexto.textContent.trim()// isto vai pegar o que utilizador escreveu no campo spanTexto
+
+                if (novoTexto === "") {
+                    modal.showModal()
+                    return
+                }
+                tarefas.push({
+                    texto: novoTexto,
+                    concluida: false
+                })
+
+
+                salvarTarefas()
+                mostrarTarefas()
+
+
+            }
+        })
+
+
+    })
+
 
 
     //---------------------Aqui vamos contruir o Progresso das Tarefas
