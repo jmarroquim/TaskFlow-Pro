@@ -2,7 +2,8 @@
 let tarefas = JSON.parse(localStorage.getItem("tarefas")) || []
 
 //
-let filtro = "todas"
+let filtro = "todas" // Uma variavel que guarda qual tipo de tarefa quero ver
+let pesquisa = "" // Esta variavel vai guardar o texto que escrever no  input de pesquisa
 
 
 
@@ -19,7 +20,7 @@ let pendentes = document.querySelector('#pendentes') // Chamada para a Div do pe
 let totalizada = document.querySelector('#totalizada')
 
 //Botao Adicionar Tarefa
-btnAdicionar.addEventListener('click', function () {  // Evento ao carregar o btnAdicionar.
+/*btnAdicionar.addEventListener('click', function () {  // Evento ao carregar o btnAdicionar.
 
     let texto = input.value    // Chama apenas o valor dentro do input.
 
@@ -40,14 +41,14 @@ btnAdicionar.addEventListener('click', function () {  // Evento ao carregar o bt
 
     input.value = "" // Logo que aparecer, ele Limpa o input com este campo
 
-})
+})*/
 
 // Botao Fechar o Dialogo
 btnFechar.addEventListener('click', function () { //este codigo adiciona o evento do botao Entendido
     modal.close() // e este fecha o botao.
 })
 
-//Aqui muda tudo, muda os filtros.
+//Aqui muda tudo, muda os filtros, conforme for chamando pendentes, todos, ou concluidas.
 function mudarFiltro(novoFiltro) {
     filtro = novoFiltro
     mostrarTarefas()
@@ -74,9 +75,6 @@ function mostrarTarefas() {
 
     tarefasFiltradas.forEach(function (tarefa, posicao) { // Criamos o Loop, passa a pegar a primeira tarefa no loop.
 
-        //-----------------------------------Aqui vamos dar a função para o Botao adicionar.
-
-
         let spanTexto = document.createElement("span") // criando uma variavel com elemento span
         spanTexto.classList.add("texto-tarefa") // atibui uma class para meu span
         let li = document.createElement("li") // Criação: O código cria um elemento <li></li>, para cada tarefa.
@@ -92,7 +90,23 @@ function mostrarTarefas() {
             mostrarTarefas()
         })
 
-        spanTexto.textContent = `${tarefa.texto}` // transforma o elemento, ou faz aparecer este elemento no HTML.
+
+        //---------------------------------Aqui vamos dar ao input pesquisar uma nova forma de verificar assim uqe for encontrado o texto
+
+        let textoOriginal = tarefa.texto // esta variavel guarda um novo texto. que vira do tarefa.texto
+        if (pesquisa !== "") {
+            let regex = new RegExp(`(${pesquisa})`, "gi") // procura todo texto, gi, g-> global, i -> ingnore case maisculas ou minusculas
+
+            let textoComHighLight = textoOriginal.replace(regex, '<span class= "highlight">$1</span>')
+            spanTexto.innerHTML = textoComHighLight
+        } else {
+            spanTexto.textContent = textoOriginal
+        }
+
+
+
+
+        /**spanTexto.textContent = `${tarefa.texto}` // transforma o elemento, ou faz aparecer este elemento no HTML. */
         li.appendChild(spanTexto)
 
         if (tarefa.concluida) {
@@ -156,20 +170,7 @@ function mostrarTarefas() {
 
 
 
-        //------------------------------------------- Criando o evento Blur
-        spanTexto.addEventListener('blur', function () { // spanTexto é a minha variavel do input
-            spanTexto.contentEditable = false // o false faz o texto parar de ser editavel.
-            let novoTexto = spanTexto.textContent.trim()
-            if (novoTexto === "") {
-                modal.showModal()
-                return
-            }
 
-            tarefa.texto = spanTexto.textContent // atualiza o meu objeto para o novo texto que esta no meu span
-            salvarTarefas()
-            mostrarTarefas()
-
-        })
 
         //----------------------------------------------------------------------------
         //Criação de Botao Remover as tarefas adicionadas.
@@ -189,6 +190,8 @@ function mostrarTarefas() {
     })
 
     //-----------------------------------Criando um Botão para adicionar Inline
+
+
     let btnAddInline = document.createElement('button')
     btnAddInline.classList.add("btnAddInline")
     btnAddInline.textContent = "➕"
@@ -199,24 +202,62 @@ function mostrarTarefas() {
 
     btnAddInline.addEventListener('click', function () {
         let criaLiAfterAdd = document.createElement("li") // Criar meu elemento Li
+        criaLiAfterAdd.classList.add("editing") // Vai me criar uma class com o nome editing
         let spanTexto = document.createElement("span") // Criar o meu elemento Span
 
+        let existeEdicao = document.querySelector(".editing") // chama esta class para eu poder mecher nela
+        if (existeEdicao) { // se ja existe edição, retorna 
+            return
+        }
+
+        let cancelado = false // uma variavel recebendo falso
+
+        //------------------------------------------- Criando o evento Blur, que é acabou de editar e sai do foco
+        spanTexto.addEventListener('blur', function () { // spanTexto é a minha variavel do input
+            criaLiAfterAdd.classList.remove("editing") // Aqui estou a dizer para remover a class adicionada quando clicamos o botao add
+            spanTexto.contentEditable = false // o false faz o texto parar de ser editavel.
+            let novoTexto = spanTexto.textContent.trim()
+            if (novoTexto === "") {
+                criaLiAfterAdd.remove()
+                return
+            }
+
+            if (cancelado) {
+                return
+            }
+
+            tarefas.push({
+                texto: novoTexto,
+                concluida: false
+            })
+
+            salvarTarefas()
+            mostrarTarefas()
+
+        })
+
+
         spanTexto.textContent = ""              // Faz aparecer no HTML vazio
-        criaLiAfterAdd.appendChild(spanTexto)   //
+        criaLiAfterAdd.appendChild(spanTexto)   // faz mostrar no HTML o meu spanTexto, que é o meu 
 
         // Faz aparecer dentro da minha Lista
         lista.insertBefore(criaLiAfterAdd, btnAddInline)
         spanTexto.contentEditable = true
         spanTexto.focus()
 
+
+
+
         //-----------------------------------------aqui crio a keydown( Quando carrego no Enter, ele adicina)
         spanTexto.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {    // se carregar no botao ESC
+                cancelado = true
                 criaLiAfterAdd.remove() // apaga a minha linha que criou quando carregue no botao +
             }
 
             if (e.key === 'Enter') {
                 e.preventDefault()
+                spanTexto.blur()
 
                 let novoTexto = spanTexto.textContent.trim()// isto vai pegar o que utilizador escreveu no campo spanTexto
 
@@ -224,17 +265,12 @@ function mostrarTarefas() {
                     modal.showModal()
                     return
                 }
-                tarefas.push({
-                    texto: novoTexto,
-                    concluida: false
-                })
-
 
                 salvarTarefas()
                 mostrarTarefas()
-
-
             }
+
+
         })
 
 
@@ -283,10 +319,9 @@ function removeTarefa(posicao) {
 }
 
 // Fucão inserir apenas com Botao "Enter"
-input.addEventListener('keydown', function (e) {
-    if (e.key === "Enter") {
-        btnAdicionar.click()
-    }
+input.addEventListener('input', function (e) { // Porque o input vai disparar sempre que eu escrever qualquer coisa no input pesquisar
+    pesquisa = input.value.toLowerCase() // vai buscar a variavel pesquisa, o valor dela ce transforma tudo em letras minusculas
+    mostrarTarefas() // Redesenha a lista com base na pesquisa
 })
 
 //Funcao para chamar quando gravar as minhas tarefas, onde tarefa é meu objeto

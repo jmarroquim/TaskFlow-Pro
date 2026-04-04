@@ -241,6 +241,12 @@ div.progresso p {
     align-items: center;
 }
 
+.highlight {
+    background-color: yellow;
+    /*Vai fazer com que o texto que for encontrado fique Amarelo e Bold*/
+    font-weight: bold;
+}
+
 
 
 footer {
