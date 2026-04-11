@@ -52,7 +52,7 @@
         <!--Meu Campo para adicionar as tarefas.-->
         <div class="input-area">
             <input type="text" id="taskInput" placeholder="Pesquisar...">
-            <!--<button id="addBtn">+</button>-->
+
         </div>
 
         <!--Aqui vai apararecer tudo-->
@@ -68,8 +68,13 @@
 
     <!--Dialogo/ Minha mensagem de erro quando nao preenchido o campo vazio-->
     <dialog id="meuModal">
-        <p>⚠️ Por favor, digite uma tarefa válida (letras ou números).</p>
-        <button id="btnfecharModal">Entendido</button>
+        <p id="modalTexto"></p>
+
+        <div>
+            <button id="btnConfirmar" class="btn-modal">Confirmar</button>
+            <button id="btnfecharModal" class="btn-modal">Cancelar</button>
+        </div>
+
     </dialog>
 
     <!--Chamada do Script-->
