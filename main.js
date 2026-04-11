@@ -1,3 +1,13 @@
+
+// isto diz que o app pode 
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('SW registado'))
+        .catch(err => console.log('Erro SW:', err));
+}
+
+
 /*Tenta Buscar tarefas guardadas, se nao existir Iniciar vazio
 let tarefas = JSON.parse(localStorage.getItem("tarefas")) || []
 */
