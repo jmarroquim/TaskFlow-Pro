@@ -506,8 +506,8 @@ footer {
     /*fica preso ao ecra*/
     position: fixed;
     bottom: 90px;
-    right: 200px;
-    margin: 20px auto;
+    right: 20px;
+
 
     width: 60px;
     height: 60px;
