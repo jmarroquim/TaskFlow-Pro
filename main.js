@@ -31,7 +31,9 @@ let modalTexto = document.querySelector('#modalTexto') // chamada para mexer est
 let btnConfirmar = document.querySelector('#btnConfirmar') // chamada para mexer nesta div
 let categoriaAberta = null // uma categoria nula 
 let barra = document.querySelector('.progresso-barra') //vai buscar a barra no HTML para eu poder mexer nela
-
+let modoSelecao = false
+let isLongPress = false
+let barraAcoes = document.querySelector('#barra-acoes')// vai buscar aquela variavel
 
 //------------------ 👉 Criando uma Categoria Global
 /**
@@ -45,6 +47,32 @@ if (categorias.length === 0) {
     localStorage.setItem("categorias", JSON.stringify(categorias))
 }
 
+//funcao para o card quando selecionado
+function toggleSelecionado(card) { // quando for chamado esta funcao tem que passar um card
+    card.classList.toggle("card-selecionado") // aqui se nao tem o tick passa a ter se tiver desmarca
+
+    let check = card.querySelector(".check-card") // encontra este elemente com esta classe
+
+    if (card.classList.contains("card-selecionado")) { // este card esta selecionado
+        check.style.opacity = "1" //se estiver mostra selecionado 
+    } else {
+        check.style.opacity = "0" // se nao estiver esconde
+    }
+}
+
+function atualizarBarraAcoes() {
+    let selecionados = document.querySelectorAll('.card-selecionado') // procura todos elementos com esta classe
+
+    if (selecionados.length > 0) { // aqui quantas existem? se tiver pelo menos 1
+        barraAcoes.classList.add('ativa') // adiciona esta classe e a barra aparece
+    } else {
+        barraAcoes.classList.remove('ativa')
+        modoSelecao = false
+    }
+    toggleSelecionado(card)
+    atualizarBarraAcoes()
+}
+
 
 //-------------------  👉  Aqui vamos mostrar as categorias
 function mostrarCategorias() {
@@ -52,7 +80,8 @@ function mostrarCategorias() {
     document.body.classList.remove("modo-foco") // isto diz para mim sempre que redesenhar, limpa o modo foco antigo
     lista.classList.remove('modo-foco')
 
-    categorias.forEach(function (categoria) { // Percorre categorias
+    categorias.forEach(function (categoria, index) { // este é o forEach dos card todos
+
         let card = document.createElement("div") // cria uma div
         card.classList.add("categoria-card")// atribui um nome a esta class de categoria-card
 
@@ -61,6 +90,58 @@ function mostrarCategorias() {
             lista.classList.add('modo-foco')
             document.body.classList.add("modo-foco")
         }
+
+        //-----------------------------------------
+        //-----------------------------------------
+        //----------------Abaixo disto tudo estao os eventos todos 
+
+
+
+
+
+        //------------------------- vamos adicionar o pressionar e segurar
+        let pressTimer // uma variavel para guardar o tempo
+
+        // 👉 Telefone
+        card.addEventListener('touchstart', function () { //touchstart quando o dedo tocar no ecra
+            pressTimer = setTimeout(() => { // o setTimeOut é o tempo de espera que é de 500ms
+                isLongPress = true
+                modoSelecao = true
+                toggleSelecionado(card)
+                atualizarBarraAcoes()
+
+
+            }, 500) // 500ms = meio segundo
+        })
+        card.addEventListener('touchend', function () {
+            clearTimeout(pressTimer) // quando tirar o dedo ele vai cancelar 
+
+        })
+
+
+        // 👉 Pc rato 
+
+        card.addEventListener('mousedown', function () {
+            pressTimer = setTimeout(() => {
+                isLongPress = true
+                modoSelecao = true
+                toggleSelecionado(card)
+                atualizarBarraAcoes()
+            }, 500) // 500ms = meio segundo
+        })
+        card.addEventListener('mouseup', function () {
+            clearTimeout(pressTimer)
+
+        })
+
+
+
+        //--------------------aqui vou criar o check visual com checkbox
+        let checkSelecionado = document.createElement("div")
+        checkSelecionado.textContent = "✔"
+        checkSelecionado.classList.add("check-card")
+
+        card.appendChild(checkSelecionado)
 
         //---------------------- 👉 BOTÃO VOLTAR (criado sempre no render)
         //------------vamos adicionar um botao de voltar quando ele esta dentro do card
@@ -131,6 +212,26 @@ function mostrarCategorias() {
 
         card.appendChild(titulo)
 
+        //-------------------------Aqui vamos criar o Botao para apagar os Card
+        let btnApagar = document.createElement('button') //criando um botao
+        btnApagar.textContent = "🗑️"                    // o botao recebe esta iamgem como texto
+        btnApagar.classList.add("btnApagarCategoria")   //aqui atribuimos esta class para o botao
+
+        btnApagar.addEventListener('click', function (e) {
+            e.stopPropagation() // evita abrir o card ao mesmo tempo
+
+            abrirModalConfirmacao("Apagar esta categoria?", () => { // vai abrir o meu modal, e so usa o arrow function quando confirmar    
+                categorias.splice(index, 1)
+
+                salvarCategorias()  // guarda no localStorage
+                mostrarCategorias() // redesenha tudo
+            })
+
+        })
+
+        card.appendChild(btnApagar)
+
+
         let listaTarefas = document.createElement('ul') // cria uma ul demtrp dp card
 
         //cria uma copia das tarefas
@@ -145,8 +246,9 @@ function mostrarCategorias() {
             let li = criarElementosTarefa(tarefa, index, categoria)
             listaTarefas.appendChild(li)
         })
-        //  👉 se houver mais tarefas que 3 tarefas mostrar ...
 
+
+        //  👉 se houver mais tarefas que 3 tarefas mostrar ...
         if (categoria.nome !== categoriaAberta && categoria.tarefas.length > 5) {
 
             let mais = document.createElement("p")// cria texto
@@ -164,9 +266,18 @@ function mostrarCategorias() {
 
         //-----------------------👉 aqui sao as funçoes quando abrimos os CaRD
         card.addEventListener('click', function (e) {
+            // 👉 bloqueia o click depois do long press
+            if (isLongPress) {
+                isLongPress = false
+                return
+            }
+
+
+
             e.stopPropagation() // impede que o clique afete outros elementos exemplo o body
 
 
+            //👉 comportamento normal (de abrir o card)
 
             //regra para ignorar os cliques em elementos internos 
             if (
@@ -176,6 +287,15 @@ function mostrarCategorias() {
             ) {
                 return
             }
+
+            //👉 se estiver em modo selecao
+            if (modoSelecao) {
+                toggleSelecionado(card)
+                atualizarBarraAcoes()
+                return
+            }
+
+
             // alterna abrir ou fechar
             if (categoriaAberta === categoria.nome) {
                 categoriaAberta = null
@@ -255,7 +375,6 @@ function mostrarCategorias() {
 
         //---------------------Aqui vamos mostrar o historio das tarefas em cada card, quando tenho isso significa que ja tenho um card aberto
         if (categoria.nome === categoriaAberta) {
-            console.log("ENTROU NO IF")
             let tarefas = categoria.tarefas
             let total = tarefas.length
             let concluidas = tarefas.filter(function (tarefa) {
