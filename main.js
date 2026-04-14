@@ -34,6 +34,7 @@ let barra = document.querySelector('.progresso-barra') //vai buscar a barra no H
 let modoSelecao = false
 let isLongPress = false
 let barraAcoes = document.querySelector('#barra-acoes')// vai buscar aquela variavel
+let jaAdicionou = false // variavel para nao duplicar o blur
 
 //------------------ 👉 Criando uma Categoria Global
 /**
@@ -335,7 +336,27 @@ function mostrarCategorias() {
             span.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter') {
                     e.preventDefault() // previne quebra de linha
-                    span.blur() // força a sair do campo obriga a gravar
+                    // span.blur() // força a sair do campo obriga a gravar
+
+                    let texto = span.textContent.trim()
+
+                    if (texto === "") return
+
+                    jaAdicionou = true
+
+                    categoria.tarefas.push({
+                        texto: texto,
+                        concluida: false
+                    })
+
+                    salvarCategorias()
+                    mostrarCategorias()
+
+                    // aqui cria uma nova linha automatica
+                    setTimeout(() => {
+                        let btn = document.querySelector('.btnAddInline')
+                        if (btn) btn.click()
+                    }, 50)
                 }
 
                 if (e.key === 'Escape') {
@@ -349,7 +370,11 @@ function mostrarCategorias() {
 
                 if (cancelado) return // se foi cancelado com ESC, nao faz nada
 
+                if (jaAdicionou) return
+
                 let texto = span.textContent.trim() // vai buscar o texto escrito e remove os espaços
+
+
 
                 if (texto === "") {
                     li.remove() // se estiver vazio apaga a linha
