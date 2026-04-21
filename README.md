@@ -1,5 +1,7 @@
 # 🚀 TaskFlow Pro
 
+🚧 Em desenvolvimento ativo — novas funcionalidades a serem adicionadas regularmente
+
 Aplicação de gestão de tarefas (To-Do List) moderna e interativa, desenvolvida com **HTML, CSS e JavaScript puro**, focada em lógica de programação, manipulação do DOM e experiência de utilizador.
 
 ---
@@ -94,6 +96,10 @@ Desenvolver uma aplicação prática para consolidar fundamentos de JavaScript e
 * 🔎 Pesquisa de tarefas
 * 📅 Datas e prioridades
 * 📱 Melhor responsividade
+* 🧩 Sistema de categorias (cards estilo Google Keep)
+* 🗑️ Remoção múltipla de categorias
+* 📤 Partilha de tarefas (PDF)
+* 📱 Melhor experiência mobile
 
 ---
 

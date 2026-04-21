@@ -331,30 +331,15 @@ li:hover {
 }
 
 
-/*Aqui vamos melhorar o design das categorias*/
+/*Aqui vamos melhorar o design das categorias os card vao ficar como google*/
 #taskList {
-    display: block;
-    column-count: 2;
-    column-gap: 15px;
-
-
-    /*Esta é a chave permite que fiquem lado ao lado*/
-    flex-wrap: wrap;
-
-    /*Espaço entre os cards*/
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
 
-    /*Centraliza os card no espaço disponivel*/
-    justify-content: flex-start;
-
-    /*Alinha os cards pelo topo*/
-    align-items: flex-start;
-
     width: 100%;
-
     padding: 8px;
     max-width: 1200px;
-
     margin: 0 auto;
 
 
@@ -375,25 +360,31 @@ li:hover {
 
 
 /*Aqui criamos um card para as categorias*/
+
 .categoria-card {
-    /*Define um tamanho fixo para os outros cards*/
-    width: 300px;
+    display: inline-block;
+    /* obrigatório para columns */
 
-    min-height: 200px;
-
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: 15px;
-    transition: all 0.3s ease;
+    width: 100%;
+    /* ocupa largura da coluna */
 
     background: #1e293b;
-    padding: 15px;
     border-radius: 12px;
+    padding: 12px;
     margin-bottom: 15px;
+
     color: white;
+
+    break-inside: avoid;
+    /* 🔥 chave do masonry */
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    transition: transform 0.2s;
+
     position: relative;
 }
+
 
 .categoria-card .texto-tarefa {
     /*Texto pequeno no modo global*/
@@ -415,28 +406,6 @@ li:hover {
     /*Todos os botoes desaparecem*/
 }
 
-
-
-
-.categoria-card {
-    display: inline-block;
-    width: 100%;
-    /* No mobile/telas pequenas, ocupa metade da tela */
-
-    break-inside: avoid;
-
-    /* E não deixa ficar gigante */
-
-    background: #1e293b;
-    border-radius: 12px;
-    padding: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
-    transition: transform 0.2s;
-
-    flex-direction: column;
-    overflow: hidden;
-}
 
 /* Quando o card está aberto, ele pode crescer se você quiser, ou manter o tamanho */
 .categoria-card.aberta {
@@ -634,12 +603,17 @@ body:not(.modo-foco) .progresso {
 
 }
 
-
-
-
 #barra-acoes button:hover {
     transform: scale(1.1);
     transition: 0.2s;
+}
+
+
+/*---------------------aqui vamos colorir o numero de quantos cards estao selecionados */
+#contadorSelecionados {
+    color: white;
+    font-size: small;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
 /*------------------------Aqui passamos para formato web-Desktop------------------------*/

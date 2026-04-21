@@ -35,6 +35,12 @@ let modoSelecao = false
 let isLongPress = false
 let barraAcoes = document.querySelector('#barra-acoes')// vai buscar aquela variavel
 let jaAdicionou = false // variavel para nao duplicar o blur
+let contador = document.querySelector('#contadorSelecionados') //vaibuscar aquele span para eu mexer nele// span para conta numero que selecionno nos cards
+let btnRemoverSelecionados = document.querySelector('#btnRemoverSelecionados') // vai vuscar aquele elemento para mexer nele
+
+
+
+
 
 //------------------ 👉 Criando uma Categoria Global
 /**
@@ -61,8 +67,20 @@ function toggleSelecionado(card) { // quando for chamado esta funcao tem que pas
     }
 }
 
+// aqui criamos uma barra e contamos quantos foram selecionados na barra
+
 function atualizarBarraAcoes() {
     let selecionados = document.querySelectorAll('.card-selecionado') // procura todos elementos com esta classe
+    let total = selecionados.length // quantos cards estao selecionados
+
+    let contador = document.querySelector('#contadorSelecionados') // vai buscar o elemento no html para mexer nele
+
+    if (total === 1) {
+        contador.textContent = `1 selecionado`
+    } else {
+        contador.textContent = ` ${total} selecionados`
+    }
+
 
     if (selecionados.length > 0) { // aqui quantas existem? se tiver pelo menos 1
         barraAcoes.classList.add('ativa') // adiciona esta classe e a barra aparece
@@ -73,6 +91,64 @@ function atualizarBarraAcoes() {
     toggleSelecionado(card)
     atualizarBarraAcoes()
 }
+
+
+
+// aqui limpamos quando clicamos fora quando ainda esta selecionado o card
+document.addEventListener('click', function (e) { // se clicar em toda pagina inteira.document
+
+    let clicouDentro = e.target.closest('.categoria-card')// este click veio dentro de um card? se sim, marca se nao retorna null
+    let clicouNaBarra = e.target.closest('#barra-acoes')
+
+    if (!clicouDentro && !clicouNaBarra) { // se nao limpou dentro
+
+        let selecionados = document.querySelectorAll('.card-selecionado')
+
+        selecionados.forEach(card => {
+            card.classList.remove('card-selecionado')
+
+            let check = card.querySelector('.check-card')
+            if (check) check.style.opacity = "0"
+
+        })
+
+        modoSelecao = false
+
+        document.querySelector('#barra-acoes').classList.remove('ativa')
+
+    }
+
+})
+
+
+
+//-----------------------aqui criamos o remover selecionados--------
+btnRemoverSelecionados.addEventListener('click', function () { // criar a funcao do botao click
+    let selecionados = document.querySelectorAll('.card-selecionado') // pegar os selecionados
+
+    let indices = [] // criamos uma caixa vazia para guardar varios valores
+
+    /*traducação:
+    1. Vai buscar o data-index
+    2. transforma em numero
+    3. guarda dentro do array vazio que criamos de nome indices
+    */
+    selecionados.forEach(card => {
+        indices.push(Number(card.dataset.index))
+        console.log('funcionou')
+    })
+
+    indices.sort((a, b) => b - a)
+
+    indices.forEach(index => {
+        categorias.splice(index, 1)
+    })
+
+    salvarCategorias()
+    mostrarCategorias()
+
+
+})
 
 
 //-------------------  👉  Aqui vamos mostrar as categorias
@@ -86,6 +162,8 @@ function mostrarCategorias() {
         let card = document.createElement("div") // cria uma div
         card.classList.add("categoria-card")// atribui um nome a esta class de categoria-card
 
+        card.dataset.index = index // serve para dar uma etiqueta ao array, exemplo passa a ter index = 0
+
         if (categoria.nome === categoriaAberta) {
             card.classList.add('aberta')
             lista.classList.add('modo-foco')
@@ -95,11 +173,6 @@ function mostrarCategorias() {
         //-----------------------------------------
         //-----------------------------------------
         //----------------Abaixo disto tudo estao os eventos todos 
-
-
-
-
-
         //------------------------- vamos adicionar o pressionar e segurar
         let pressTimer // uma variavel para guardar o tempo
 
@@ -418,6 +491,11 @@ function mostrarCategorias() {
             let percentagem = (concluidas / total) * 100
             barra.style.width = percentagem + "%"
         }
+
+
+
+        //--------------------------aqui vou mostrar o contador de cada card selecionado
+
 
     })
 
