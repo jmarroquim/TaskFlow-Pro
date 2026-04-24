@@ -616,6 +616,30 @@ body:not(.modo-foco) .progresso {
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
+
+/*------------Aqui vamos estilizar o toast*/
+#toast {
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    background: #38bdf8;
+    color: #fff;
+
+    padding: 12px 20px;
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition: opacity 0.3s ease;
+
+}
+
 /*------------------------Aqui passamos para formato web-Desktop------------------------*/
 @media(min-width: 768px) {
     .container {

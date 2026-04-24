@@ -37,8 +37,8 @@ let barraAcoes = document.querySelector('#barra-acoes')// vai buscar aquela vari
 let jaAdicionou = false // variavel para nao duplicar o blur
 let contador = document.querySelector('#contadorSelecionados') //vaibuscar aquele span para eu mexer nele// span para conta numero que selecionno nos cards
 let btnRemoverSelecionados = document.querySelector('#btnRemoverSelecionados') // vai vuscar aquele elemento para mexer nele
-
-
+let btnPartilhar = document.querySelector('#btnPartilhar') // vai buscar aquele elmento para eu mexer nele
+let toast = document.querySelector('#toast') // vai buscar aquele elemente para eu mexer nele 
 
 
 
@@ -138,17 +138,55 @@ btnRemoverSelecionados.addEventListener('click', function () { // criar a funcao
         console.log('funcionou')
     })
 
+
+
     indices.sort((a, b) => b - a)
 
-    indices.forEach(index => {
-        categorias.splice(index, 1)
+    abrirModalConfirmacao("Eliminar esta categoria?", () => {
+        indices.forEach(index => {
+            categorias.splice(index, 1)
+        })
+
+        salvarCategorias()
+        mostrarCategorias()
     })
 
-    salvarCategorias()
-    mostrarCategorias()
+
+
 
 
 })
+
+
+
+
+//-----------------  👉  Aqui vamos criar o evento que deve acontecer ao clicar no botao partilhar
+btnPartilhar.addEventListener('click', function () {
+
+    let selecionados = document.querySelectorAll('.card-selecionado')
+    let texto = ""
+
+    selecionados.forEach(card => { // para cada categoria
+
+        let categoria = categorias[card.dataset.index] // ele serve para guardar o indice
+
+        texto += "📁 " + categoria.nome + " \n" // isto \n significa quebra de linha
+        categoria.tarefas.forEach(function (tarefa) { // para cada tarefa dessa categoria
+            texto += "- " + tarefa.texto + "\n"
+        })
+        texto += "\n"
+    })
+
+    navigator.clipboard.writeText(texto)// serve para copiar ou copiar a variavel texto
+    toast.style.opacity = "1" // para mostrar assim que o texto for copiado pelo navigator.clipboard
+
+    setTimeout(() => { // esperas um pouco depois de 2 segundos 
+        toast.style.opacity = "0"   // opacity zero, ele desaparece de novo
+    }, 1000)
+})
+
+
+
 
 
 //-------------------  👉  Aqui vamos mostrar as categorias
