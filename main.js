@@ -435,10 +435,13 @@ function mostrarCategorias() {
         btnAdd.addEventListener('click', function (e) {
             e.stopPropagation()
 
+
+
             let li = document.createElement("li")// Vai criar uma linha que vamos escrever a nova tarefa
             li.classList.add("editing") // Adiciona uma classe editing para depois por estilo
 
-
+            let existeEdicao = document.querySelector(".editing")
+            if (existeEdicao) return // se ja existir edição volta e nao aumenta outras linhas
 
             let span = document.createElement("span") // cria uma span para funcionar depois como input
 
@@ -447,6 +450,16 @@ function mostrarCategorias() {
 
             span.contentEditable = true // Torna o texto editavel tipo no input
             span.focus()    //  coloca o cursor a piscar dentro do span
+
+            setTimeout(() => {
+                span.scrollIntoView({ //leva este elemento para a zona visivel
+                    behavior: "smooth",
+                    block: "center" // tenta por a meio
+                })
+
+            }, 200)
+
+
 
             let cancelado = false // variavel para controlar se o utilizador cancelou com ESC
 
@@ -474,7 +487,7 @@ function mostrarCategorias() {
                     setTimeout(() => {
                         let btn = document.querySelector('.btnAddInline')
                         if (btn) btn.click()
-                    }, 50)
+                    }, 0)
                 }
 
                 if (e.key === 'Escape') {
@@ -800,6 +813,9 @@ function mostrarTarefas() {
     //----------------- 👉 Aqui vamos dar a função para o Botao adicionar.
 
     btnAddInline.addEventListener('click', function () {
+
+
+
         let criaLiAfterAdd = document.createElement("li") // Criar meu elemento Li
         criaLiAfterAdd.classList.add("editing") // Vai me criar uma class com o nome editing
         let spanTexto = document.createElement("span") // Criar o meu elemento Span

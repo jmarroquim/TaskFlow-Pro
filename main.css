@@ -346,8 +346,8 @@ li:hover {
 }
 
 #taskList.modo-foco {
-    /*quando estas em modo foco remove o columun count 2 para apenas 1 e assim ocupa todo espaco*/
-    column-count: 1;
+    grid-template-columns: 1fr;
+    /*fica apenas uma coluna, quando esta em modo foco*/
 }
 
 #taskList.modo-foco .categoria-card {
@@ -356,6 +356,7 @@ li:hover {
 
 #taskList.modo-foco .categoria-card.aberta {
     display: block !important;
+
 }
 
 
