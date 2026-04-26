@@ -178,6 +178,13 @@ btnPartilhar.addEventListener('click', function () {
     })
 
     navigator.clipboard.writeText(texto)// serve para copiar ou copiar a variavel texto
+
+    navigator.share({ // serve para partilhar com os app tradicionais(nativos) que ja existem no telemovel
+        title: "TaskFlow Pro",
+        text: texto
+    })
+
+
     toast.style.opacity = "1" // para mostrar assim que o texto for copiado pelo navigator.clipboard
 
     setTimeout(() => { // esperas um pouco depois de 2 segundos 
