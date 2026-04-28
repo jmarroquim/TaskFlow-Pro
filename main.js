@@ -432,7 +432,8 @@ function mostrarCategorias() {
 
 
         //-------------------------- Aqui onde damos um evento ao botao Adicionar
-        btnAdd.addEventListener('click', function (e) {
+        function abrirInputInline(e) {
+
             e.stopPropagation()
 
 
@@ -480,14 +481,20 @@ function mostrarCategorias() {
                         concluida: false
                     })
 
+                    console.log(categoriaAberta)
+                    console.log(categoria.nome)
+
                     salvarCategorias()
                     mostrarCategorias()
 
                     // aqui cria uma nova linha automatica
                     setTimeout(() => {
-                        let btn = document.querySelector('.btnAddInline')
+                        let cardAtual = document.querySelector('.categoria-card.aberta')
+                        let btn = cardAtual.querySelector('.btnAddInline')
+
                         if (btn) btn.click()
-                    }, 0)
+
+                    }, 100)
                 }
 
                 if (e.key === 'Escape') {
@@ -521,9 +528,12 @@ function mostrarCategorias() {
                 mostrarCategorias() // redesenha a interface
             })
 
+        }
 
 
-        })
+        btnAdd.addEventListener('click', abrirInputInline)
+
+
 
         card.appendChild(btnAdd)
 
