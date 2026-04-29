@@ -512,6 +512,23 @@ footer {
     cursor: pointer;
 }
 
+button#btnTema {
+    background: none;
+    border: none;
+    color: gold;
+}
+
+/*----------Estilizando o Header principal*/
+div#header-principal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 20px;
+}
+
+
+
 /*Aqui vamos controlar o modo foco do body para esconder o .filtro e .progresso*/
 body:not(.modo-foco) .filtro,
 body:not(.modo-foco) .progresso {
@@ -640,6 +657,50 @@ body:not(.modo-foco) .progresso {
     transition: opacity 0.3s ease;
 
 }
+
+
+/*------------Aqui vamos estilizar o botao apagar categoria dentro do card*/
+button.btnApagarCategoria {
+    background: none;
+    cursor: pointer;
+    border: none;
+    font-size: 20px;
+
+    padding: 6px;
+    border-radius: 8px;
+
+    transition: 0.2s;
+}
+
+button.btnApagarCategoria:hover {
+    background: rgba(255, 0, 0, 0.15);
+    transform: scale(1.1);
+}
+
+
+/*------------Aqui estilizamos o card-header, que é o header de dentro dos cards que mexe no titulo e o botao de apagar*/
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+
+/*----------Aqui estilizamos o light Mode */
+body.light-mode {
+    background: linear-gradient(135deg, #f8fafc, #b6b7b8);
+}
+
+body.light-mode .categoria-card {
+    background: rgb(167, 165, 165);
+    color: rgb(71, 71, 71);
+}
+
+body.light-mode h1 {
+    color: #0f172a;
+}
+
 
 /*------------------------Aqui passamos para formato web-Desktop------------------------*/
 @media(min-width: 768px) {

@@ -15,6 +15,40 @@ let tarefas = JSON.parse(localStorage.getItem("tarefas")) || []
 //Se ja existe categoria usa, se nao começa com Geral
 let categorias = JSON.parse(localStorage.getItem("categorias")) || []
 
+let svgSol = ` <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-sun-icon lucide-sun">
+                        <circle cx="12" cy="12" r="4" />
+                        <path d="M12 2v2" />
+                        <path d="M12 20v2" />
+                        <path d="m4.93 4.93 1.41 1.41" />
+                        <path d="m17.66 17.66 1.41 1.41" />
+                        <path d="M2 12h2" />
+                        <path d="M20 12h2" />
+                        <path d="m6.34 17.66-1.41 1.41" />
+                        <path d="m19.07 4.93-1.41 1.41" />
+                    </svg>`
+
+let svgLua = ` <svg viewBox="-5 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+            xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
+            fill="#000000" stroke="#000000">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+                <title>moon</title>
+                <desc>Created with Sketch Beta.</desc>
+                <defs> </defs>
+                <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+                    <g id="Icon-Set-Filled" sketch:type="MSLayerGroup" transform="translate(-575.000000, -829.000000)"
+                        fill="#000000">
+                        <path
+                            d="M586.256,845 C586.256,838.1 590.735,832.236 597,829.991 C595.243,829.361 593.353,829 591.372,829 C582.33,829 575,836.164 575,845 C575,853.837 582.33,861 591.372,861 C593.353,861 595.243,860.639 597,860.009 C590.735,857.764 586.256,851.901 586.256,845"
+                            id="moon" sketch:type="MSShapeGroup"> </path>
+                    </g>
+                </g>
+            </g>
+        </svg> `
+
 let filtro = "todas" // Uma variavel que guarda qual tipo de tarefa quero ver
 let pesquisa = "" // Esta variavel vai guardar o texto que escrever no  input de pesquisa
 let input = document.querySelector('#taskInput') // Pegar o valor do Input.
@@ -39,6 +73,31 @@ let contador = document.querySelector('#contadorSelecionados') //vaibuscar aquel
 let btnRemoverSelecionados = document.querySelector('#btnRemoverSelecionados') // vai vuscar aquele elemento para mexer nele
 let btnPartilhar = document.querySelector('#btnPartilhar') // vai buscar aquele elmento para eu mexer nele
 let toast = document.querySelector('#toast') // vai buscar aquele elemente para eu mexer nele 
+let btnTema = document.querySelector('#btnTema')// vai buscar aquele elemento para eu mexer nele
+
+
+
+
+//------------------ 👉 Criando o DARK E O LIGHT MODE
+btnTema.addEventListener('click', function () { //dando o evento ao meu Botao do tema, mas aguarda o click
+
+    document.body.classList.toggle('light-mode') // quando clicar, deve adicionar se nao tem se tiver remover o que sera estilizado no css
+
+
+
+    if (document.body.classList.contains('light-mode')) {
+
+        localStorage.setItem('tema', 'light')
+        btnTema.innerHTML = svgLua
+
+
+    } else {
+        localStorage.setItem('tema', 'dark')
+        btnTema.innerHTML = svgSol
+
+    }
+})
+
 
 
 
@@ -46,6 +105,14 @@ let toast = document.querySelector('#toast') // vai buscar aquele elemente para 
 /**
  * Isto abaixo diz, se nao existir nada cria uma categoria Geral
  */
+let temaGuardado = localStorage.getItem('tema')
+if (temaGuardado === 'light') {
+    document.body.classList.add('light-mode')
+    btnTema.innerHTML = svgLua
+} else {
+    btn.innerHTML = svgSol
+}
+
 if (categorias.length === 0) {
     categorias.push({
         nome: "Geral",
@@ -204,7 +271,7 @@ function mostrarCategorias() {
 
     categorias.forEach(function (categoria, index) { // este é o forEach dos card todos
 
-        let card = document.createElement("div") // cria uma div
+        let card = document.createElement("div") // cria uma variavel que vai guardar uma div
         card.classList.add("categoria-card")// atribui um nome a esta class de categoria-card
 
         card.dataset.index = index // serve para dar uma etiqueta ao array, exemplo passa a ter index = 0
@@ -281,6 +348,11 @@ function mostrarCategorias() {
         card.prepend(btnVoltar) // Coloca o botao no topo do card
 
 
+        //------------criando uma div para guardar o titulo e o botao de eliminar o card (criar estilizacao)
+        let cardHeader = document.createElement("div") // crie uma variavel que recebe uma div
+        cardHeader.classList.add("card-header") // adicionei uma class de nome card-header
+
+
         let titulo = document.createElement("h3") // cria um h3
         titulo.textContent = categoria.nome
 
@@ -329,7 +401,7 @@ function mostrarCategorias() {
 
         })
 
-        card.appendChild(titulo)
+        cardHeader.appendChild(titulo) // mete o titulo no header
 
         //-------------------------Aqui vamos criar o Botao para apagar os Card
         let btnApagar = document.createElement('button') //criando um botao
@@ -348,7 +420,8 @@ function mostrarCategorias() {
 
         })
 
-        card.appendChild(btnApagar)
+        cardHeader.appendChild(btnApagar) // mete o titulo no header    
+        card.appendChild(cardHeader)    // mete o header no card
 
 
         let listaTarefas = document.createElement('ul') // cria uma ul demtrp dp card
@@ -796,145 +869,7 @@ function criarElementosTarefa(tarefa, posicao, categoria) {
 }
 
 
-// Funcão chamar as tarefas
-function mostrarTarefas() {
 
-    lista.innerHTML = "" // Inicia vazio a lista no HTML.
-
-    //sera criado novo array de nome tarefa, com filter passara verificar e retornar apenas se concluida for true.
-    let tarefasFiltradas = filtrarTarefas() //assim tarefasFiltradas recebe os filtros da function acima.
-
-    tarefasFiltradas.forEach(function (tarefa, posicao) { // Criamos o Loop, passa a pegar a primeira tarefa no loop.
-
-        let li = criarElementosTarefa(tarefa, posicao)
-        lista.appendChild(li)
-
-    })
-
-    //----------------- 👉 Criando um Botão para adicionar Inline
-
-
-    let btnAddInline = document.createElement('button')
-    btnAddInline.classList.add("btnAddInline")
-    btnAddInline.textContent = "➕"
-
-    lista.appendChild(btnAddInline)
-
-    //----------------- 👉 Aqui vamos dar a função para o Botao adicionar.
-
-    btnAddInline.addEventListener('click', function () {
-
-
-
-        let criaLiAfterAdd = document.createElement("li") // Criar meu elemento Li
-        criaLiAfterAdd.classList.add("editing") // Vai me criar uma class com o nome editing
-        let spanTexto = document.createElement("span") // Criar o meu elemento Span
-
-        let existeEdicao = document.querySelector(".editing") // chama esta class para eu poder mecher nela
-        if (existeEdicao) { // se ja existe edição, retorna 
-            return
-        }
-
-        let cancelado = false // uma variavel recebendo falso
-
-        //----------------- 👉  Criando o evento Blur, que é acabou de editar e sai do foco
-        spanTexto.addEventListener('blur', function () { // spanTexto é a minha variavel do input
-            criaLiAfterAdd.classList.remove("editing") // Aqui estou a dizer para remover a class adicionada quando clicamos o botao add
-            spanTexto.contentEditable = false // o false faz o texto parar de ser editavel.
-            let novoTexto = spanTexto.textContent.trim()
-            if (novoTexto === "") {
-                criaLiAfterAdd.remove()
-                return
-            }
-
-            if (cancelado) {
-                return
-            }
-
-            categorias[0].tarefas.push({ // Dentro da categoria principal
-                texto: novoTexto,
-                concluida: false,
-
-            })
-
-            salvarCategorias()
-            mostrarCategorias()
-
-        })
-
-
-        spanTexto.textContent = ""              // Faz aparecer no HTML vazio
-        criaLiAfterAdd.appendChild(spanTexto)   // faz mostrar no HTML o meu spanTexto, que é o meu 
-
-        // Faz aparecer dentro da minha Lista
-        lista.insertBefore(criaLiAfterAdd, btnAddInline)
-        spanTexto.contentEditable = true
-        spanTexto.focus()
-
-
-
-
-        //----------------- 👉 aqui crio a keydown( Quando carrego no Enter, ele adicina)
-        spanTexto.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {    // se carregar no botao ESC
-                cancelado = true
-                criaLiAfterAdd.remove() // apaga a minha linha que criou quando carregue no botao +
-            }
-
-            if (e.key === 'Enter') {
-                e.preventDefault()
-                spanTexto.blur()
-
-                let novoTexto = spanTexto.textContent.trim()// isto vai pegar o que utilizador escreveu no campo spanTexto
-
-                if (novoTexto === "") {
-                    modalTexto.textContent = "⚠️ Por favor, digite uma tarefa válida"
-                    btnConfirmar.style.display = "none"
-                    modal.showModal()
-                }
-
-                salvarCategorias()
-                mostrarCategorias()
-            }
-
-
-        })
-
-
-    })
-
-
-
-    //--------------------- 👉 Aqui vamos contruir o Progresso das Tarefas
-    /* let total = tarefas.length // aqui o total recebe o objeto todo.length para correr toda length
- 
-     let concluidas = tarefas.filter(function (tarefa) {
-         return tarefa.concluida === true
-     }).length
- 
-     progReal.textContent = `${concluidas} / ${total}` // aqui diz mostra o meu progresso no html
- 
-     let barra = document.querySelector('.progresso-barra') // “vai buscar aquela div para eu poder mexer nela”
-     let percentagem = (concluidas / total) * 100  // o calculo para achar a percentagem, onde divide concluidas que recebe o filter
- 
-     barra.style.width = percentagem + "%"
- 
- 
-    //----------------------- 👉 Aqui vamos Mostrar o numero de tarefas pendentes e numero de tarefas concluidas
- 
-    let numPendente = tarefas.filter(function (tarefa) {
-        return tarefa.concluida === false
-    }).length
- 
-    pendentes.textContent = `⏳${numPendente} `
- 
-    //----------------------- 👉  Aqui vamos Mostrar o numero de tarefas concluidas-------------------------
- 
-    let numConcluidas = tarefas.filter(tarefa => tarefa.concluida === true).length
-    totalizada.textContent = `✔ ${numConcluidas}`
-*/
-
-}
 
 
 
