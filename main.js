@@ -110,7 +110,8 @@ if (temaGuardado === 'light') {
     document.body.classList.add('light-mode')
     btnTema.innerHTML = svgLua
 } else {
-    btn.innerHTML = svgSol
+    document.body.classList.remove('light-mode')
+    btnTema.innerHTML = svgSol
 }
 
 if (categorias.length === 0) {
@@ -155,8 +156,7 @@ function atualizarBarraAcoes() {
         barraAcoes.classList.remove('ativa')
         modoSelecao = false
     }
-    toggleSelecionado(card)
-    atualizarBarraAcoes()
+
 }
 
 
@@ -217,10 +217,6 @@ btnRemoverSelecionados.addEventListener('click', function () { // criar a funcao
         salvarCategorias()
         mostrarCategorias()
     })
-
-
-
-
 
 })
 
